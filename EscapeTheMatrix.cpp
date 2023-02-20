@@ -1,91 +1,53 @@
 #include<iostream>
+#include<cstring>
 
 using namespace std;
 
-int * initArray (int m);
-int init();
-bool checkSuit (int * Array1, int * Array2);
-int countNumber(int *Array1, int * Array2, int len1, int len2);
-int getGcd(int * Array, int len);
-int getLcd(int * Array, int len);
+int m, n;
+int matrix[1000][1000];
+bool check_visited[1000][1000];
+int dx[] = {-1, 0, 1, 0}; // các hướng lên, phải xuống trái
+int dy[] = {0, 1, 0, -1};
+bool found = false;
+
+void foundTheWay(int x, int y)
+{
+    check_visited[x][y] = true; // đánh dấu
+    if (x == m - 1 && y == n - 1){
+        found = true;
+        matrix[x][y] = 2;
+        return;
+    }
+    for (int i = 0; i < 4; i++){
+        int new_x = x + dx[i];
+        int new_y = y + dy[i];
+        if (new_x >= 0 && new_x < m && new_y >= 0 && new_y < n && !check_visited[new_x][new_y] && matrix[new_x][new_y] == 0){
+            foundTheWay(new_x, new_y);
+            if (found){
+                matrix[x][y] = 2;
+                return; // tìm được thì thoát ra
+            }
+        }
+    }
+
+}
 
 int main()
 {
-    int m = init();
-    int n = init();
-    int * A1 = initArray(m);
-    int * A2 = initArray(n);
+    cin >> m >> n;
+    for (int i = 0; i < m; i++){
+        for (int j = 0; j < n; j++)
+            cin >> matrix[i][j];
+    }
 
-    cout << countNumber(A1, A2, m, n);
-
-    return 0;
-
-}
-
-int init()
-{
-    int number;
-
-    cin >> number;
-
-    return number;
-}
-
-int * initArray (int m)
-{
-    int * Array = new int[m];
+    memset(check_visited, 0, sizeof check_visited);
+    foundTheWay(0, 0);
 
     for (int i = 0; i < m; i++){
-        cin >> *(Array + i);
+        for (int j = 0; j < n; j++)
+            cout << matrix[i][j] << " ";
+        cout << endl;
     }
 
-    return Array;
+    return 0;
 }
-
-int Gcd(int a, int b)
-{
-    if (a % b == 0) return b;
-    int r = a % b;
-    return Gcd(b, r);
-}
-
-int getGcd(int* Array, int len)
-{
-    int gcd = Gcd(*(Array), *(Array + 1));
-    for(int i = 2; i < len; i++){
-        gcd = Gcd(gcd, *(Array + i));
-    }
-    return gcd;
-}
-
-int Lcd(int a, int b)
-{
-    return a * b / Gcd(a, b);
-}
-
-int getLcd(int* Array, int len)
-{
-    int lcd = Lcd(*(Array), *(Array + 1));
-    for (int i = 2; i < len; i++){
-        lcd = Lcd(lcd, *(Array + i));
-    }
-    return lcd;
-}
-
-int countNumber(int *Array1, int * Array2, int len1, int len2)
-{
-    int count = 0;
-    int gcd_Array2 = getGcd( Array2, len2);
-    int lcd_Array1 = getLcd( Array1, len1);
-
-    if (gcd_Array2 % lcd_Array1 != 0) return count;
-    while(lcd_Array1 <= gcd_Array2)
-    {
-        if (gcd_Array2 % lcd_Array1 == 0) count++;
-        lcd_Array1 += lcd_Array1;
-    }
-
-    return count;
-}
-
-
