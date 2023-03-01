@@ -19,7 +19,6 @@ void updateMap(int x, int y);
 void printBomb();
 void playGame();
 void replay();
-int visited[11][11];
 
 int main()
 {
@@ -107,18 +106,20 @@ void printBomb()
     cout << endl;
 }
 
+void Fill(int x, int y)
+{
+    for (int i = 0; i < 8; i++){
+        Map[x+dx[i]][y+dy[i]] = char('0'+mapBomb[x+dx[i]][y+dy[i]]);
+    }
+}
+
 void updateMap(int x, int y)
 {
     Map[x][y] = char(48+mapBomb[x][y]);
     Step++;
-    visited[x][y] = 1;
-    if (mapBomb[x][y] > 0) return;
-    for (int i = 0; i < 8; i++)
-    {
-        int nx = x+dx[i];
-        int ny = y+dy[i];
-        if (nx >= 1 && nx <= w && ny >= 1 && ny <= w && visited[nx][ny] == 0) updateMap(nx, ny);
-    }
+    if(Map[x][y] == 0)
+        Fill(x, y);
+
 }
 
 void setMap()
@@ -127,7 +128,6 @@ void setMap()
     for (int j = 0; j < 11; j++){
         Map[i][j] = '*';
         mapBomb[i][j] = 0;
-        visited[i][j] = 0;
     }
 }
 
