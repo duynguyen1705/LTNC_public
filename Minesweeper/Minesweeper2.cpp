@@ -4,15 +4,18 @@
 
 using namespace std;
 
-char Map[11][11];
+const int MAX_WIDTH  = 11;
+const int MAX_HEIGHT = 11;
+char Map[MAX_WIDTH][MAX_HEIGHT];
 void setMap();
-int mapBomb[11][11];
+int mapBomb[MAX_WIDTH][MAX_HEIGHT];
 int w, h;
 int guessBomb;
 int emptyP;
 int Step = 0;
-int dx[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
-int dy[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+#define DIRECTION 8
+int dx[DIRECTION] = {-1, -1, -1, 0, 0, 1, 1, 1};
+int dy[DIRECTION] = {-1, 0, 1, -1, 1, -1, 0, 1};
 void chooseBomb();
 void printMap();
 void updateMap(int x, int y);
@@ -25,7 +28,6 @@ void clearScreen();
 int main()
 {
     playGame();
-    clearScreen();
     replay();
     return 0;
 }
@@ -56,7 +58,7 @@ void playGame()
         cout << endl << "What pix you want to open(x, y): ";
         cin >> x >> y;
         updateMap(x, y);
-        if (mapBomb[x][y] == -1 || Step == emptyP) {printBomb(); break;}
+        if (mapBomb[x][y] == -1 || Step == emptyP) {clearScreen(); printBomb(); break;}
     }while(mapBomb[x][y] != -1 || x > 10 || y > 10 || Step < emptyP);
 
     if (mapBomb[x][y] == -1) cout << "YOU'RE DEAD";
@@ -68,7 +70,7 @@ void countBombAround(int x, int y)
 {
     if (mapBomb[x][y] == -1) return;
     int countB = 0;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < DIRECTION; i++)
         if (mapBomb[x+dx[i]][y+dy[i]] == -1) countB++;
     mapBomb[x][y] = countB;
 }
@@ -79,9 +81,10 @@ void chooseBomb()
     {
         int x = rand() % w + 1;
         int y = rand() % h + 1;
-        if(mapBomb[x][y] != -1){
-        mapBomb[x][y] = -1;
-        countBomb++;
+        if(mapBomb[x][y] != -1)
+        {
+            mapBomb[x][y] = -1;
+            countBomb++;
         }
     }
     for (int i = 1; i <= w; i++)
@@ -116,7 +119,7 @@ void updateMap(int x, int y)
     Step++;
     visited[x][y] = 1;
     if (mapBomb[x][y] > 0) return;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < DIRECTION; i++)
     {
         int nx = x+dx[i];
         int ny = y+dy[i];
@@ -126,8 +129,9 @@ void updateMap(int x, int y)
 
 void setMap()
 {
-    for (int i = 0; i < 11; i++)
-    for (int j = 0; j < 11; j++){
+    for (int i = 0; i < MAX_WIDTH; i++)
+    for (int j = 0; j < MAX_HEIGHT; j++)
+    {
         Map[i][j] = '*';
         mapBomb[i][j] = 0;
         visited[i][j] = 0;
@@ -137,7 +141,8 @@ void setMap()
 void replay()
 {
     char x;
-    do{
+    do
+    {
         cout << "Do you want to play again(Y/N): ";
         cin >> x;
     }while(x != 'Y' && x!= 'N');
@@ -145,7 +150,9 @@ void replay()
     else cout << "Have fun! See you again!!!";
 }
 
-void clearScreen() {
+void clearScreen()
+{
     const int PATCH_LINES = 30;
-	for (int i = 0; i < PATCH_LINES; i++) cout << endl;
+	for (int i = 0; i < PATCH_LINES; i++) 
+        cout << endl;
 }
