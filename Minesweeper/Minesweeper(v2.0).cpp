@@ -20,10 +20,12 @@ void printBomb();
 void playGame();
 void replay();
 int visited[11][11];
+void clearScreen();
 
 int main()
 {
     playGame();
+    clearScreen();
     replay();
     return 0;
 }
@@ -49,6 +51,7 @@ void playGame()
     int x, y;
 
     do{
+        clearScreen();
         printMap();
         cout << endl << "What pix you want to open(x, y): ";
         cin >> x >> y;
@@ -140,4 +143,9 @@ void replay()
     }while(x != 'Y' && x!= 'N');
     if(x == 'Y') playGame();
     else cout << "Have fun! See you again!!!";
+}
+
+void clearScreen() {
+    const int PATCH_LINES = 30;
+	for (int i = 0; i < PATCH_LINES; i++) cout << endl;
 }
